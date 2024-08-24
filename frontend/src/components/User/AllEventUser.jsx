@@ -72,7 +72,7 @@ export default function AllEvent() {
         toast.error(err);
       });
   };
-  console.log(totalTicket);
+
   function filterContent(report, searchTerm) {
     const result = report.filter(
       (r) =>
