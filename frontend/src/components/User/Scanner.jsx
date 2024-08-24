@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import adpotServices from "../../services/api/adoptPet";
+import adpotServices from "../../api/adoptPet";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "../common/Spinner";

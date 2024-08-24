@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import editImg from "../../assets/edit.png";
 import deleteImg from "../../assets/delete.png";
-import emailServices from "../../services/api/emails/user";
+import emailServices from "../../api/emails/user";
 
 const Users = () => {
   const [data, setData] = useState([]);

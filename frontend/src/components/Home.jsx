@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import Header from "./common/Header";
 import Footer from "./common/Footer";
 import { AiFillHeart } from "react-icons/ai";
-import feedbackservices from "../services/api/feedBack";
+import feedbackservices from "../api/feedBack";
 import { toast } from "react-toastify";
 
 function Home() {

@@ -199,10 +199,8 @@ function App() {
               exact
               element={<AddVehicleBudgetRequestForm />}
             /> */}
-            //admin
             <Route path="/admin/employee" element={<Employee />} />
     
-            // EventManagement
             <Route path="eventdashboard" element={<EventPortal />}>
               <Route path="getEvents" element={<AllEvent />} />
               <Route path="addEvent" element={<AddEvent />} />
