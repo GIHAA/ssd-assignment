@@ -8,11 +8,12 @@ const {
   editstock,
   getstock,
 } = require("../controller/eventStockRequestController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/reqstock", reqstock);
-router.get("/getStocks", getStocks);
-router.delete("/deletestock/:id", deletestock);
-router.put("/editstock/:id", editstock);
-router.get("/getstock/:id", getstock);
+router.post("/reqstock", protect, reqstock);
+router.get("/getStocks", protect, getStocks);
+router.delete("/deletestock/:id", protect, deletestock);
+router.put("/editstock/:id", protect, editstock);
+router.get("/getstock/:id", protect, getstock);
 
 module.exports = router;
