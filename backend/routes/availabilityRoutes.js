@@ -16,7 +16,7 @@ const {
 router.post("/", protect, addAvailability);
 router.get("/", protect, readAvailability);
 router.get("/:id", protect, getOneAvailability);
-router.put("/:id", updateAvailability);
-router.delete("/:id", deleteAvailability);
+router.put("/:id", protect , updateAvailability);
+router.delete("/:id", protect , deleteAvailability);
 
 module.exports = router;

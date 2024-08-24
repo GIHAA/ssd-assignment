@@ -121,7 +121,7 @@ function App() {
             <Route path="shelterpet" element={<ShelterPet />} />
             <Route path="adoptpet" element={<AdoptPet />} />
             <Route path="/feedback" element={<Feedback />} />
-            //user
+
             <Route path="user" element={<UserPortal />} />
             <Route path="profile" element={<Profile />} />
             <Route path="booking" element={<Booking />} />
@@ -130,13 +130,13 @@ function App() {
             <Route path="registerevent/:id" element={<RegisterEvent />} />
             <Route path="feedbackevent/:id" element={<AddEventFeedback />} />
             <Route path="/scanner" element={<Scanner />} />
-            //
+{/* 
             <Route path="/supplierList" element={<SupplierList />} />
             <Route path="/addSuppliers" element={<AddSuppliers />} />
             <Route path="/manageSuppliers" element={<ManageSuppliers />} />
             <Route path="/updateSuppliers/:id" element={<UpdateSupplier />} />
             <Route path="/stockRequests" element={<StockRequests />} />
-            <Route path="/eventstockReqs" element={<EventStockReqs />} />
+            <Route path="/eventstockReqs" element={<EventStockReqs />} /> */}
             <Route
               path="/StockBudgetRequests"
               element={<StockBudgetRequests />}
@@ -149,15 +149,15 @@ function App() {
               path="/UpdateStockBudgetRequest/:id"
               element={<UpdateStockBudgetRequest />}
             />
-            <Route path="user" element={<UserPortal />} />
+            {/* <Route path="user" element={<UserPortal />} />
             <Route path="profile" element={<Profile />} />
             <Route path="booking" element={<Booking />} />
             <Route path="pets" element={<Pets />} />
             <Route path="events" element={<AllEventUser />} />
             <Route path="registerevent/:id" element={<RegisterEvent />} />
             <Route path="feedbackevent/:id" element={<AddEventFeedback />} />
-            <Route path="test" element={<Spinner />} />
-            <Route path="petprofile" element={<VetPortal />}>
+            <Route path="test" element={<Spinner />} /> */}
+            {/* <Route path="petprofile" element={<VetPortal />}>
               <Route path="updatepet/:id" element={<UpdatePetProfile />} />
               <Route path="allpetprofile" element={<AllPetProfile />} />
               <Route path="addpet" element={<AddPetProfile />} />
@@ -174,8 +174,8 @@ function App() {
               <Route path="breed" element={<Breed />} />
               <Route path="upvac/:id/:index/:state" element={<UpdateVac />} />
             </Route>
-            <Route path="/petprofile/qrresult/:id" element={<QrPetProfile />} />
-            //Vehicle Management
+            <Route path="/petprofile/qrresult/:id" element={<QrPetProfile />} /> */}
+            {/* //Vehicle Management
             <Route path="/vhome" exact element={<VHome />} />
             <Route path="/vehicles" exact element={<Vehicles />} />
             <Route path="/editvehicle/:id" exact element={<EditVehicle />} />
@@ -198,15 +198,19 @@ function App() {
               path="/addvbudget"
               exact
               element={<AddVehicleBudgetRequestForm />}
-            />
+            /> */}
             //admin
-            <Route path="/employee" element={<Employee />} />
+            <Route path="/admin/employee" element={<Employee />} />
+    
             // EventManagement
             <Route path="eventdashboard" element={<EventPortal />}>
               <Route path="getEvents" element={<AllEvent />} />
               <Route path="addEvent" element={<AddEvent />} />
               <Route path="editEvent/:id" element={<EditEvent />} />
-              <Route path="getFeedbacks" element={<AllEventFeedback />} />
+              <Route path="dashboard" element={<EventDashboard />} />
+              <Route path="report" element={<EventReport />} />
+              
+              {/* <Route path="getFeedbacks" element={<AllEventFeedback />} />
               <Route path="budget" element={<AllEventBudget />} />
               <Route path="editbudget/:id" element={<EditBudget />} />
               <Route path="addBudget" element={<BudgetRequestForm />} />
@@ -220,7 +224,7 @@ function App() {
               <Route path="addbooking/:id" element={<RegisterEvent />} />
               <Route path="editBooking/:id" element={<EditBooking />} />
               <Route path="getEventsUser" element={<AllEventUser />} />
-              <Route path="addFeedback/:id" element={<AddEventFeedback />} />
+              <Route path="addFeedback/:id" element={<AddEventFeedback />} /> */}
             </Route>
             //financial_manager
             <Route path="FinaDashBoard" element={<FinaLeftBar />}>
@@ -236,14 +240,7 @@ function App() {
               <Route path="FinaGetVehicle" element={<FinaGetVehicle />} />
               <Route path="FinaGetStock" element={<FinaGetStock />} />
             </Route>
-            <Route path="user" element={<UserPortal />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="booking" element={<Booking />} />
-            <Route path="pets" element={<Pets />} />
-            <Route path="events" element={<AllEventUser />} />
-            <Route path="registerevent/:id" element={<RegisterEvent />} />
-            <Route path="feedbackevent/:id" element={<AddEventFeedback />} />
-            <Route path="test" element={<Spinner />} />
+
             //inventory
             <Route path="/inventory" element={<InvDashboard />} />
             <Route path="/items" element={<InvItems />} />

@@ -15,6 +15,8 @@ const statusRoutes = require("./routes/statusRoutes");
 const budgetReqRoutes = require("./routes/budgetRequestRoutes");
 const eventStockRequestRoutes = require("./routes/eventStockRequestRoutes");
 const eventAmountRoutes = require("./routes/eventAmountRoutes");
+const rateLimit = require('express-rate-limit');
+
 
 const connectDB = require("./config/db");
 const port = process.env.port || 8080;
@@ -22,13 +24,20 @@ const port = process.env.port || 8080;
 connectDB();
 
 const app = express();
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again later",
+});
+
+app.use(limiter);
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (res, req)=>{
-    req.send("welcome to happy tails")
+app.get("/", (res, req) => {
+  req.send("welcome to happy tails");
 });
 
 app.use("/qr/", require("./routes/qrRoutes.js"));

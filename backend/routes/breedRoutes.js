@@ -6,10 +6,11 @@ const {
   breedUpdate,
   deletebreed,
 } = require("../controller/breedController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addbreed", addbreed);
-router.get("/getbreed", getallbreeds);
-router.put("/breedupdate/:id", breedUpdate);
-router.delete("/deletebreed/:id", deletebreed);
+router.post("/addbreed", protect , addbreed);
+router.get("/getbreed", protect , getallbreeds);
+router.put("/breedupdate/:id", protect , breedUpdate);
+router.delete("/deletebreed/:id", protect ,  deletebreed);
 
 module.exports = router;
