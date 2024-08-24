@@ -10,8 +10,6 @@ const {
 
 const {
   protect,
-  userProtect,
-  adminProtect,
 } = require("../middleware/authMiddleware");
 const { paymentValidation } = require("../middleware/cusDonaMiddleware");
 

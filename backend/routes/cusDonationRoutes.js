@@ -14,11 +14,11 @@ const {
   userProtect,
   adminProtect,
 } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/", addUserValidation, addcusDonation);
-router.get("/", readcusAllDonation);
-router.get("/:id", readcusDonation);
-router.put("/:id", addUserValidation, updatecusDonation);
-router.delete("/:id", deletecusDonation);
-
-module.exports = router;
+router.post("/", protect, addUserValidation, addcusDonation);
+router.get("/", protect, readcusAllDonation);
+router.get("/:id", protect, readcusDonation);
+router.put("/:id", protect, addUserValidation, updatecusDonation);
+router.delete("/:id", protect, deletecusDonation);
+protect, (module.exports = router);

@@ -7,10 +7,11 @@ const {
   geteamount,
   editeamount,
 } = require("../controller/eventAmountController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addeamount", addeamount);
-router.get("/geteamounts", geteamounts);
-router.delete("/deleteeamount/:id", deleteeamount);
-router.put("/editeamount/:id", editeamount);
-router.get("/geteamount/:id", geteamount);
+router.post("/addeamount", protect , addeamount);
+router.get("/geteamounts", protect , geteamounts);
+router.delete("/deleteeamount/:id", protect , deleteeamount);
+router.put("/editeamount/:id", protect , editeamount);
+router.get("/geteamount/:id", protect , geteamount);
 module.exports = router;

@@ -10,9 +10,9 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/addEvent", protect, addEvent);
-router.get("/getEvents", getEvents);
-router.put("/editEvent/:id", editEvent);
-router.get("/getEvent/:eventId", getEvent);
-router.delete("/deleteEvent/:id", deleteEvent);
+router.get("/getEvents", protect , getEvents);
+router.put("/editEvent/:id", protect , editEvent);
+router.get("/getEvent/:eventId", protect , getEvent);
+router.delete("/deleteEvent/:id", protect , deleteEvent);
 
 module.exports = router;

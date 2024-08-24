@@ -5,9 +5,10 @@ const {
   getEFeedbacks,
   deleteFeedback,
 } = require("../controller/eventFeedbackController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addFeedback", addFeedback);
-router.get("/getEFeedbacks", getEFeedbacks);
-router.delete("/deletefeedback/:id", deleteFeedback);
+router.post("/addFeedback", protect , addFeedback);
+router.get("/getEFeedbacks", protect , getEFeedbacks);
+router.delete("/deletefeedback/:id", protect , deleteFeedback);
 
 module.exports = router;

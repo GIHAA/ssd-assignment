@@ -8,25 +8,12 @@ const {
   getEmployee,
   updateEmployee,
 } = require("../controller/Employee.controller");
+const { protect } = require("../middleware/authMiddleware");
 
-//@route  POST api/employee
-//@desc   add employee
-router.post("/add", addEmployee);
-
-//@route  GET api/employee
-//@desc   get employee by Id
-router.get("/:id", getEmployeeById);
-
-//@route  DELETE api/employee
-//@desc   delete employee
-router.delete("/:id", deleteEmployee);
-
-//@route  GET api/employee/all
-//@desc   get all employees
-router.get("/", getEmployee);
-
-//@route  PUT api/employee
-//@desc   update employee
-router.put("/:id", updateEmployee);
+router.post("/add", protect , addEmployee);
+router.get("/:id", protect , getEmployeeById);
+router.delete("/:id", protect , deleteEmployee);
+router.get("/", protect , getEmployee);
+router.put("/:id", protect , updateEmployee);
 
 module.exports = router;
