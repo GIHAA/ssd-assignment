@@ -1,0 +1,10 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit --color
+
+pre-commit:
+  commands:
+    format:
+      glob: '*.{css,html,json,less,md,scss,yaml,yml,ts,tsx,js,jsx}'
+      run: npx prettier --write {staged_files} && git add {staged_files}
