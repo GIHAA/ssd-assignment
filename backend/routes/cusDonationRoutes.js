@@ -14,7 +14,6 @@ const {
   userProtect,
   adminProtect,
 } = require("../middleware/authMiddleware");
-const { protect } = require("../middleware/authMiddleware");
 
 router.post("/", protect, addUserValidation, addcusDonation);
 router.get("/", protect, readcusAllDonation);

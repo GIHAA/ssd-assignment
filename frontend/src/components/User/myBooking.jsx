@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import bookingServices from "../../services/api/booking";
+import bookingServices from "../../api/booking";
 import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
 import Spinner from "../common/Spinner";

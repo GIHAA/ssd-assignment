@@ -4,7 +4,7 @@ import { NavLink, Link, Outlet, useNavigate } from "react-router-dom";
 
 import logo from "../../assets/logopanel.png";
 
-import { logout, reset } from "../../services/auth/authSlice";
+import { logout, reset } from "../../api/auth/authSlice";
 
 import { useSelector, useDispatch } from "react-redux";
 

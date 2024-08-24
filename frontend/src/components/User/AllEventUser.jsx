@@ -14,11 +14,18 @@ export default function AllEvent() {
   const [isLoading, setIsLoading] = useState(true);
   const [petType, setpetType] = useState("");
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
     async function getevents() {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_BACKEND_API}api/event/getEvents`
+          `${process.env.REACT_APP_BACKEND_API}api/event/getEvents`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+          }
         );
         console.log(res.data);
         setEvent(res.data.allevents);
@@ -65,7 +72,7 @@ export default function AllEvent() {
         toast.error(err);
       });
   };
-  console.log(totalTicket);
+
   function filterContent(report, searchTerm) {
     const result = report.filter(
       (r) =>

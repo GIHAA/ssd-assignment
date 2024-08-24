@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Slider from "@mui/material/Slider";
 import { useSelector } from "react-redux";
-import bookingServices from "../../services/api/booking";
+import bookingServices from "../../api/booking";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Header from "../common/Header";
