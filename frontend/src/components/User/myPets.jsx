@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import adpotServices from "../../services/api/adoptPet";
+import adpotServices from "../../api/adoptPet";
 import { toast } from "react-toastify";
 import Spinner from "../common/Spinner";
 

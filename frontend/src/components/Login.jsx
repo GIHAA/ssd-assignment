@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { login, reset } from "../services/auth/authSlice";
+import { login, reset } from "../api/auth/authSlice";
 import Header from "./common/Header";
 import Footer from "./common/Footer";
 import loginbackground from "../assets/loginbackground.png";

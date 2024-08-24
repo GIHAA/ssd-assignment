@@ -4,7 +4,7 @@ import logoutImg from "../assets/logout.png";
 import { Link, NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout, reset } from "../services/auth/authSlice";
+import { logout, reset } from "../api/auth/authSlice";
 
 function InventorySideBar() {
   const dispatch = useDispatch();
