@@ -27,7 +27,7 @@ router.post("/forgot", forgotUser);
 router.delete("/", protect, userProtect, deleteUser);
 
 //admin
-router.put("/:id", updateAdmin);
-router.delete("/:id", deleteAdmin);
+router.put("/:id", protect, updateAdmin);
+router.delete("/:id", protect, deleteAdmin);
 
 module.exports = router;

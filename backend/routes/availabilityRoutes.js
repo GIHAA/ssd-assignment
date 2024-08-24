@@ -9,8 +9,6 @@ const {
 } = require("../controller/availabilityController");
 const {
   protect,
-  userProtect,
-  adminProtect,
 } = require("../middleware/authMiddleware");
 
 router.post("/", protect, addAvailability);
