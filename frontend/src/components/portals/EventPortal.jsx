@@ -28,11 +28,7 @@ export default function EventPortal() {
           >
             <ul className="flex flex-col p-4 mt-4 border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 ">
               {user ? (
-                // <li>
-                //   <button className="btn" onClick={onLogout}>
-                //     <FaSignOutAlt /> Logout
-                //   </button>
-                // </li>
+        
                 <div className="flex ">
                   <div class="px-2 space-y-0.5 font-medium text-white text-[17px] text-left">
                     <button>{user.name}</button>
@@ -132,39 +128,6 @@ export default function EventPortal() {
               Event
             </Link>
 
-            <Link
-              to="/eventdashboard/eventbooking"
-              className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"
-            >
-              Booking
-            </Link>
-
-            <Link
-              to="/eventdashboard/getFeedbacks"
-              className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"
-            >
-              Feedback
-            </Link>
-
-            <Link
-              to="/eventdashboard/budget"
-              className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"
-            >
-              Budget
-            </Link>
-
-            <Link
-              to="/eventdashboard/stock"
-              className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"
-            >
-              Stock
-            </Link>
-            <Link
-              to="/eventdashboard/chart"
-              className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"
-            >
-              Income-Expense Report
-            </Link>
             <Link
               to="/eventdashboard/report"
               className=" bg-[#2E4960] hover:bg-[#797979] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[10px] block w-[150px] text-center mb-7 mx-auto"

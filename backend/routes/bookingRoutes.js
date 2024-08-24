@@ -15,9 +15,9 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.post("/", protect, addBooking);
-router.get("/:id", readBooking);
+router.get("/:id", protect , readBooking);
 router.get("/", protect, readBookingOpen);
-router.put("/", updateBooking);
+router.put("/", protect , updateBooking);
 router.delete("/:id", protect, deleteBooking);
 
 module.exports = router;

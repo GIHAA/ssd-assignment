@@ -15,10 +15,10 @@ const {
 } = require("../middleware/authMiddleware");
 const { paymentValidation } = require("../middleware/cusDonaMiddleware");
 
-router.post("/", paymentValidation, addPayment);
-router.get("/:id", readPayment);
-router.get("/", readAllPayment);
-router.put("/:id", paymentValidation, updatePayment);
-router.delete("/:id", deletePayment);
+router.post("/", protect, paymentValidation, addPayment);
+router.get("/:id", protect, readPayment);
+router.get("/", protect, readAllPayment);
+router.put("/:id", protect, paymentValidation, updatePayment);
+router.delete("/:id", protect, deletePayment);
 
 module.exports = router;
