@@ -17,6 +17,7 @@
     "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "express-async-handler": "^1.2.0",
+    "formik": "^2.4.6",
     "gh-pages": "^5.0.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
@@ -38,7 +39,8 @@
     "react-toastify": "^9.1.2",
     "recharts": "^2.5.0",
     "sweetalert2": "^11.7.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,8 +48,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-"deploy": "gh-pages -d build",
-"lint": "eslint src"
+    "deploy": "gh-pages -d build",
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": [
