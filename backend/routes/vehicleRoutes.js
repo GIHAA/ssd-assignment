@@ -1,5 +1,4 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express');
 const {
   readVehicle,
   addVehicle,
@@ -8,19 +7,23 @@ const {
   deleteVehicle,
   searchVehicleByPlateNo,
   getVCount,
-} = require("../controller/vehicleController");
+} = require('../controller/vehicleController');
+const validateVehicle = require('../middleware/vehicleMiddleware');
 const {
   protect,
   userProtect,
   adminProtect,
-} = require("../middleware/authMiddleware");
+} = require('../middleware/authMiddleware');
 
-router.post("/", protect, addVehicle);
-router.get("/", protect, readVehicle);
-router.get("/:id", protect, getOneVehicle);
-router.put("/:id", protect, updateVehicle);
-router.delete("/:id", deleteVehicle);
-router.get("/search/:plateNo", protect, searchVehicleByPlateNo);
-router.get("/vcount", protect, getVCount);
+const router = express.Router();
+
+router.post('/', protect, validateVehicle, addVehicle);
+router.put('/:id', protect, validateVehicle, updateVehicle);
+
+router.get('/', protect, readVehicle);
+router.get('/:id', protect, getOneVehicle);
+router.delete('/:id', protect, deleteVehicle);
+router.get('/search/:plateNo', protect, searchVehicleByPlateNo);
+router.get('/vcount', protect, getVCount);
 
 module.exports = router;
