@@ -1,4 +1,4 @@
-const { budgetSchema } = require('../validations/budgetValidation');
+const { budgetSchema } = require('../validations/budgetRequestValidation');
 
 const validateBudget = (req, res, next) => {
   const { error } = budgetSchema.validate(req.body);
