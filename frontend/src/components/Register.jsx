@@ -10,6 +10,7 @@ import registrationbackground from "../assets/registrationbackground.png";
 import { GrMapLocation } from "react-icons/gr";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import app from "../firebase.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -31,31 +32,40 @@ const Registration = () => {
   );
 
   // Handle image upload
-  const handleImageUpload = async (e) => {
-    const img = e.target.files[0];
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
 
-    if (img && allowedTypes.includes(img.type)) {
-      setIsImageUploading(true);
-      try {
-        const storage = getStorage(app);
-        const storageRef = ref(storage, "images/" + img.name);
-        await uploadBytes(storageRef, img);
-        const downloadUrl = await getDownloadURL(storageRef);
-        setFormData((prevData) => ({
-          ...prevData,
-          image: downloadUrl,
-        }));
-        setIsImageUploading(false); // Reset the uploading state after success
-      } catch (error) {
-        console.log(error);
-        toast.error("Image upload failed. Please try again.");
-        setIsImageUploading(false); // Reset the uploading state on error
-      }
-    } else {
-      toast.error("Only .png, .jpg, and .jpeg files are allowed.");
+const handleImageUpload = async (e) => {
+  const img = e.target.files[0];
+  const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+  const maxSize = 5 * 1024 * 1024; // 5MB limit
+
+  if (img && allowedTypes.includes(img.type)) {
+    if (img.size > maxSize) {
+      toast.error("Image size should not exceed 5MB.");
+      return;
     }
-  };
+
+    setIsImageUploading(true);
+    
+    try {
+      const storage = getStorage(app);
+      const uniqueImageName = uuidv4() + '-' + img.name; // Generate unique name using uuid
+      const storageRef = ref(storage, "images/" + uniqueImageName);
+      await uploadBytes(storageRef, img);
+      const downloadUrl = await getDownloadURL(storageRef);
+      setFormData((prevData) => ({
+        ...prevData,
+        image: downloadUrl,
+      }));
+      setIsImageUploading(false); // Reset the uploading state after success
+    } catch (error) {
+      console.log(error);
+      toast.error("Image upload failed. Please try again.");
+      setIsImageUploading(false); // Reset the uploading state on error
+    }
+  } else {
+    toast.error("Only .png, .jpg, and .jpeg files are allowed.");
+  }
+};
 
   // const convertToBase64 = (e) => {
   //   console.log(e);
