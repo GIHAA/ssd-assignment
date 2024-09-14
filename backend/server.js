@@ -16,7 +16,7 @@ const budgetReqRoutes = require("./routes/budgetRequestRoutes");
 const eventStockRequestRoutes = require("./routes/eventStockRequestRoutes");
 const eventAmountRoutes = require("./routes/eventAmountRoutes");
 const rateLimit = require('express-rate-limit');
-
+const auditRoutes = require("./routes/auditRoutes");
 
 const connectDB = require("./config/db");
 const port = process.env.port || 8080;
@@ -88,6 +88,8 @@ app.use("/api/payment/", require("./routes/addPaymentRoutes.js"));
 app.use("/api/transaction", require("./routes/transactionRoutes.js"));
 app.use("/api/organization", require("./routes/organizationRoutes.js"));
 app.use("/api/cusDonation", require("./routes/cusDonationRoutes.js"));
+
+app.use("/api/audits", auditRoutes);
 
 app.use(errorHandler);
 
