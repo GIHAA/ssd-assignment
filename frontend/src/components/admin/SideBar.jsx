@@ -94,6 +94,14 @@ function InventorySideBar() {
           Feedback
         </NavLink>
 
+        <NavLink
+          to="/auditlog"
+          activeclassname="active"
+          className="link bg-[#2E4960] px-[15px] py-[8px] rounded-[120px] font-bold text-white text-[12px] block w-[150px] text-center mb-7 mx-auto"
+        >
+          Audit Log
+        </NavLink>
+
         <button
           onClick={exportEmployee}
           activeclassname=" bg-[#797979]"

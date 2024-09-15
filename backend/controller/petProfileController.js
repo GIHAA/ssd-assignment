@@ -174,7 +174,11 @@ const profileUpdate = async (req, res) => {
     // Update the profile
     await pet.findOneAndUpdate({ petId: id }, updatedProfileData);
 
-    res.status(200).send({ status: "Profile updated" });
+    if (profile) {
+      // Log audit for pet profile update
+      await logAudit(req, "UPDATE_PET_PROFILE", `Pet ${petName} profile updated.`);
+      res.status(200).send({ status: "Profile updated" });
+    }
   } catch (err) {
     console.log(`error:${err}`);
     res.status(500).send({ error: "Internal server error" });
@@ -219,9 +223,11 @@ const deleteProfile = async (req, res) => {
     // Delete the profile
     await pet.findOneAndDelete({ petId: id });
 
-    return res
-      .status(200)
-      .json({ message: "profile deleted successfully", deletedProfile });
+    if (deletedProfile) {
+      // Log audit for profile deletion
+      await logAudit(req, "DELETE_PET_PROFILE", `Pet profile with ID ${id} deleted.`);
+      res.status(200).json({ message: "Profile deleted successfully", deletedProfile });
+    }
   } catch (err) {
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -266,7 +272,7 @@ const shelterpets = async (req, res) => {
   try {
     // get all the profile
     const books = await booking.find();
-
+    await logAudit(req, "VIEW_SHELTER_PETS", `Shelter pets data viewed.`);
     res.status(200).json({ books });
   } catch (err) {
     console.log(err);
