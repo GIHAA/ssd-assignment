@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   createAudit,
   getAudits,
-  getAuditById,
+  getAuditLogById,
   updateAudit,
   deleteAudit,
 } = require("../controller/auditController");
@@ -15,7 +15,7 @@ router.post("/", createAudit);
 router.get("/", getAudits);
 
 // Get a single audit record by ID
-router.get("/:id", getAuditById);
+router.get("/:id", getAuditLogById);
 
 // Update an audit record by ID
 router.put("/:id", updateAudit);

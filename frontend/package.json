@@ -4,12 +4,14 @@
   "private": true,
   "homepage": "https://gihaa.github.io/itp-project-happy-tails/",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.12.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
     "@mui/styles": "^5.12.0",
+    "@mui/x-date-pickers": "^7.14.0",
     "@reduxjs/toolkit": "^1.9.3",
+    "@tanstack/react-query": "^5.56.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
@@ -21,6 +23,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
+    "material-react-table": "^2.13.2",
     "moment": "^2.29.4",
     "qrcode": "^1.5.1",
     "react": "^18.2.0",
@@ -46,8 +49,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-"deploy": "gh-pages -d build",
-"lint": "eslint src"
+    "deploy": "gh-pages -d build",
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": [

@@ -32,17 +32,17 @@ const getAudits = asyncHandler(async (req, res) => {
   }
 });
 
-// Get single audit by ID
-const getAuditById = asyncHandler(async (req, res) => {
-  const audit = await Audit.findById(req.params.id);
-
-  if (audit) {
-    res.status(200).json(audit);
+// Get single audit log by ID
+const getAuditLogById = asyncHandler(async (req, res) => {
+  const auditLog = await Audit.findById(req.params.id).populate("user"); 
+  if (auditLog) {
+    res.json(auditLog);
   } else {
     res.status(404);
-    throw new Error("Audit not found");
+    throw new Error("Audit log not found");
   }
 });
+
 
 // Update audit by ID
 const updateAudit = asyncHandler(async (req, res) => {
@@ -77,7 +77,7 @@ const deleteAudit = asyncHandler(async (req, res) => {
 module.exports = {
   createAudit,
   getAudits,
-  getAuditById,
+  getAuditLogById,
   updateAudit,
   deleteAudit,
 };
