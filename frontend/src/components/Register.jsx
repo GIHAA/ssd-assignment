@@ -31,41 +31,60 @@ const Registration = () => {
     (state) => state.auth
   );
 
+
+  // Function to sanitize file names by removing special characters and spaces
+  const sanitizeFileName = (fileName) => {
+    return fileName
+      .replace(/\s+/g, '_')               // Replace spaces with underscores
+      .replace(/[^a-zA-Z0-9_\.-]/g, '')   // Remove any special characters except underscores, periods, and dashes
+      .replace(/(\.\.+|\/+)/g, '');       // Remove any path traversal attempts (e.g., "../")
+  };
+
   // Handle image upload
 
-const handleImageUpload = async (e) => {
-  const img = e.target.files[0];
-  const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-  const maxSize = 5 * 1024 * 1024; // 5MB limit
-
-  if (img && allowedTypes.includes(img.type)) {
-    if (img.size > maxSize) {
-      toast.error("Image size should not exceed 5MB.");
-      return;
+  const handleImageUpload = async (e) => {
+    const img = e.target.files[0];
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    const maxSize = 5 * 1024 * 1024; // 5MB limit
+  
+    if (img && allowedTypes.includes(img.type)) {
+      if (img.size > maxSize) {
+        toast.error("Image size should not exceed 5MB.");
+        return;
+      }
+  
+      setIsImageUploading(true);
+      
+      try {
+        const storage = getStorage(app);
+  
+        // Sanitize the original file name
+        const sanitizedFileName = sanitizeFileName(img.name);
+  
+        // Generate a unique file name using UUID and the sanitized file name
+        const uniqueImageName = `${uuidv4()}-${sanitizedFileName}`;
+        
+        const storageRef = ref(storage, "images/" + uniqueImageName);
+  
+        // Upload the sanitized file
+        await uploadBytes(storageRef, img);
+        const downloadUrl = await getDownloadURL(storageRef);
+  
+        setFormData((prevData) => ({
+          ...prevData,
+          image: downloadUrl,
+        }));
+        
+        setIsImageUploading(false); // Reset the uploading state after success
+      } catch (error) {
+        console.log(error);
+        toast.error("Image upload failed. Please try again.");
+        setIsImageUploading(false); // Reset the uploading state on error
+      }
+    } else {
+      toast.error("Only .png, .jpg, and .jpeg files are allowed.");
     }
-
-    setIsImageUploading(true);
-    
-    try {
-      const storage = getStorage(app);
-      const uniqueImageName = uuidv4() + '-' + img.name; // Generate unique name using uuid
-      const storageRef = ref(storage, "images/" + uniqueImageName);
-      await uploadBytes(storageRef, img);
-      const downloadUrl = await getDownloadURL(storageRef);
-      setFormData((prevData) => ({
-        ...prevData,
-        image: downloadUrl,
-      }));
-      setIsImageUploading(false); // Reset the uploading state after success
-    } catch (error) {
-      console.log(error);
-      toast.error("Image upload failed. Please try again.");
-      setIsImageUploading(false); // Reset the uploading state on error
-    }
-  } else {
-    toast.error("Only .png, .jpg, and .jpeg files are allowed.");
-  }
-};
+  };
 
   // const convertToBase64 = (e) => {
   //   console.log(e);
