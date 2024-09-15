@@ -1,4 +1,4 @@
-import { HashRouter  as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./components/Login";
@@ -108,6 +108,8 @@ import ForgotPassWord from "./components/ForgotPassWord";
 import Scanner from "./components/User/Scanner";
 import { useAutoLogin } from "./util/hooks";
 
+import AuditLogDetails from "./components/AuditlogDetailsPanel"
+
 function App() {
 
   useAutoLogin();
@@ -133,7 +135,7 @@ function App() {
             <Route path="registerevent/:id" element={<RegisterEvent />} />
             <Route path="feedbackevent/:id" element={<AddEventFeedback />} />
             <Route path="/scanner" element={<Scanner />} />
-{/* 
+            {/* 
             <Route path="/supplierList" element={<SupplierList />} />
             <Route path="/addSuppliers" element={<AddSuppliers />} />
             <Route path="/manageSuppliers" element={<ManageSuppliers />} />
@@ -203,14 +205,15 @@ function App() {
               element={<AddVehicleBudgetRequestForm />}
             /> */}
             <Route path="/admin/employee" element={<Employee />} />
-    
+            <Route path="/auditlog" element={<AuditLogDetails />} />
+
             <Route path="eventdashboard" element={<EventPortal />}>
               <Route path="getEvents" element={<AllEvent />} />
               <Route path="addEvent" element={<AddEvent />} />
               <Route path="editEvent/:id" element={<EditEvent />} />
               <Route path="dashboard" element={<EventDashboard />} />
               <Route path="report" element={<EventReport />} />
-              
+
               {/* <Route path="getFeedbacks" element={<AllEventFeedback />} />
               <Route path="budget" element={<AllEventBudget />} />
               <Route path="editbudget/:id" element={<EditBudget />} />

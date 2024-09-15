@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import adpotServices from "../../api/adoptPet";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "../common/Spinner";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import { QrReader } from "react-qr-reader";
+import QrScanner from "react-qr-scanner"; // Importing QrScanner
 import loginbackground from "../../assets/loginbackground.png";
 import axios from "axios";
 
@@ -63,6 +63,24 @@ function Scanner() {
       });
   };
 
+  const handleScan = (result) => {
+    if (result) {
+      setData(result.text);
+      setIsLoading(true);
+      setTimeout(() => {
+        display(result.text);
+      }, 2000);
+    }
+  };
+
+  const handleError = (error) => {
+    console.error("QR Scanner Error: ", error);
+  };
+
+  const previewStyle = {
+    width: "75%",
+  };
+
   return (
     <>
       <Header />
@@ -75,25 +93,15 @@ function Scanner() {
           <h1 className="flex justify-center text-white font-semibold text-[25px] pt-3">
             QR CODE SCANNER
           </h1>
-          <QrReader
-            onResult={(result, error) => {
-              if (!!result) {
-                setData(result?.text);
-                setIsLoading(true);
-                setTimeout(() => {
-                  display(result?.text);
-                }, 2000);
-              }
-
-              if (!!error) {
-                // console.info(error);
-              }
-            }}
-            style={{ width: "75%" }}
+          <QrScanner
+            delay={300}
+            onError={handleError}
+            onScan={handleScan}
+            style={previewStyle}
           />
-          {/* <p>{data}</p> */}
         </div>
       </div>
+
       {isLoading && (
         <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-[#ffffff]  rounded-full w-[200px] h-[200px] ">
@@ -108,75 +116,75 @@ function Scanner() {
         <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-8">
             <h2 className="text-lg font-bold mb-4">Booking ID {booking.bid}</h2>
-            <table class="border-collapse w-full">
+            <table className="border-collapse w-full">
               <tbody>
-                <tr class="bg-gray-200">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-200">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Customer name
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.cus_name}
                   </td>
                 </tr>
-                <tr class="bg-gray-100">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-100">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Booking description
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.description}
                   </td>
                 </tr>
-                <tr class="bg-gray-200">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-200">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Number of pets
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.petCount}
                   </td>
                 </tr>
-                <br></br>
+                <br />
               </tbody>
             </table>
             <div className="grid gap-6 mb-6 mt-4 lg:grid-cols-2">
               {booking.mini.map((item, index) => (
                 <>
-                  <table class="border-collapse w-full">
+                  <table className="border-collapse w-full">
                     <tbody>
-                      <tr class="bg-gray-100">
-                        <td class="border border-gray-400 px-4 py-1 font-medium">
+                      <tr className="bg-gray-100">
+                        <td className="border border-gray-400 px-4 py-1 font-medium">
                           Pet num {index + 1} details
                         </td>
-                        <td class="border border-gray-400 px-4 py-1"></td>
+                        <td className="border border-gray-400 px-4 py-1"></td>
                       </tr>
-                      <tr class="bg-gray-200">
-                        <td class="border border-gray-400 px-4 py-1 font-medium">
+                      <tr className="bg-gray-200">
+                        <td className="border border-gray-400 px-4 py-1 font-medium">
                           Pet ID
                         </td>
-                        <td class="border border-gray-400 px-4 py-1">
+                        <td className="border border-gray-400 px-4 py-1">
                           {item.pid}
                         </td>
                       </tr>
-                      <tr class="bg-gray-100">
-                        <td class="border border-gray-400 px-4 py-1 font-medium">
+                      <tr className="bg-gray-100">
+                        <td className="border border-gray-400 px-4 py-1 font-medium">
                           Pet Type
                         </td>
-                        <td class="border border-gray-400 px-4 py-1">
+                        <td className="border border-gray-400 px-4 py-1">
                           {item.type}
                         </td>
                       </tr>
-                      <tr class="bg-gray-200">
-                        <td class="border border-gray-400 px-4 py-1 font-medium">
+                      <tr className="bg-gray-200">
+                        <td className="border border-gray-400 px-4 py-1 font-medium">
                           Pet name
                         </td>
-                        <td class="border border-gray-400 px-4 py-1">
+                        <td className="border border-gray-400 px-4 py-1">
                           {item.name}
                         </td>
                       </tr>
-                      <tr class="bg-gray-100">
-                        <td class="border border-gray-400 px-4 py-1 font-medium">
+                      <tr className="bg-gray-100">
+                        <td className="border border-gray-400 px-4 py-1 font-medium">
                           Pet Description
                         </td>
-                        <td class="border border-gray-400 px-4 py-1">
+                        <td className="border border-gray-400 px-4 py-1">
                           {item.description}
                         </td>
                       </tr>
@@ -201,62 +209,58 @@ function Scanner() {
         <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-8">
             <h2 className="text-lg font-bold mb-4 ">Event ID {booking.eid}</h2>
-            {/* <img
-              src={selectedBooking.image}
-              className="w-[300px] h-[300px]"
-            ></img> */}
-            <br></br>
-            <table class="border-collapse w-full">
+            <br />
+            <table className="border-collapse w-full">
               <tbody>
-                <tr class="bg-gray-100">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-100">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Event Name
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.eventName}
                   </td>
                 </tr>
-                <tr class="bg-gray-200">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-200">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Customer Name
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.cusName}
                   </td>
                 </tr>
-                <tr class="bg-gray-100">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-100">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Number of tickets
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.noOfTicket}
                   </td>
                 </tr>
-                <tr class="bg-gray-100">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-100">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Phone Number
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.phoneNumber}
                   </td>
                 </tr>
-                <tr class="bg-gray-100">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-100">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Email
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.email}
                   </td>
                 </tr>
-                <tr class="bg-gray-200">
-                  <td class="border border-gray-400 px-4 py-2 font-medium">
+                <tr className="bg-gray-200">
+                  <td className="border border-gray-400 px-4 py-2 font-medium">
                     Total
                   </td>
-                  <td class="border border-gray-400 px-4 py-2">
+                  <td className="border border-gray-400 px-4 py-2">
                     {booking.total}
                   </td>
                 </tr>
-                <br></br>
+                <br />
               </tbody>
             </table>
             <div className="flex justify-end">

@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const {jwtDecode} = require("jwt-decode");
+const logAudit = require("../middleware/logAudit");
 
 const viewUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
@@ -18,47 +19,48 @@ const viewUsers = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, address, phone, password, image, role } = req.body;
 
+  // Check if all fields are provided
   if (!name || !email || !password) {
+    await logAudit(req, "USER_REGISTER_FAILED", "Missing required fields", "WARNING");
     res.status(400);
     throw new Error("Please add all fields");
   }
 
-  // Check if user exists
+  // Check if user already exists
   const userExists = await User.findOne({ email });
-
   if (userExists) {
+    await logAudit(req, "USER_REGISTER_FAILED", `Attempt to register existing user: ${email}`, "WARNING");
     res.status(400);
     throw new Error("User already exists");
   }
 
-  // Hash password
+  // Create new user
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  let user;
-  // Create user
-  if (role) {
-    user = await User.create({
-      name,
-      email,
-      address,
-      phone,
-      password: hashedPassword,
-      image: image,
-      role: role,
-    });
-  } else {
-    user = await User.create({
-      name,
-      email,
-      address,
-      phone,
-      password: hashedPassword,
-      image: image,
-    });
-  }
+  const user = await User.create({
+    name,
+    email,
+    address,
+    phone,
+    password: hashedPassword,
+    image,
+    role,
+  });
 
+  // Audit log for successful registration
   if (user) {
+    await logAudit(
+      {
+        headers: req.headers,
+        connection: req.connection,
+        user: { _id: user._id }, // Pass the newly created user's _id
+      },
+      "USER_REGISTER",
+      `User ${user.email} registered successfully.`,
+      "INFO"
+    );
+
     res.status(201).json({
       _id: user.id,
       name: user.name,
@@ -72,6 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
       updatedAt: user.updatedAt,
     });
   } else {
+    await logAudit(req, "USER_REGISTER_FAILED", "User creation failed", "ERROR");
     res.status(400);
     throw new Error("Invalid user data");
   }
@@ -128,27 +131,43 @@ const registerUserUsingSocials = asyncHandler(async (data) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Check for user email
+  // Find user by email
   const user = await User.findOne({ email });
 
-  if (user && (await bcrypt.compare(password, user.password))) {
-    res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
-      address: user.address,
-      phone: user.phone,
-      role: user.role,
-      image: user.image,
-      updatedAt: user.updatedAt,
-      createdAt: user.createdAt,
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid credentials");
+  // Check for failed login
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    await logAudit(req, "FAILED_LOGIN", `Failed login attempt for email: ${email}`, "WARNING");
+    return res.status(400).json({ message: "Invalid credentials" });
   }
+
+  // Successful login
+  await logAudit(
+    {
+      headers: req.headers,
+      connection: req.connection,
+      user: { _id: user._id }, // Pass the user's ID explicitly
+    },
+    "LOGIN_USER",
+    `User ${user.email} logged in.`,
+    "INFO"
+  );
+
+  // Respond with user details and token
+  res.json({
+    _id: user.id,
+    name: user.name,
+    email: user.email,
+    token: generateToken(user._id),
+    address: user.address,
+    phone: user.phone,
+    role: user.role,
+    image: user.image,
+    updatedAt: user.updatedAt,
+    createdAt: user.createdAt,
+  });
 });
+
+
 
 //get user
 const getMe = asyncHandler(async (req, res) => {
@@ -222,20 +241,24 @@ const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    await logAudit({
+      headers: req.headers,
+      connection: req.connection,
+      user: { _id: user._id },
+    }, "DELETE_USER", `User ${user.email} deleted.`);
     const deletedUser = await user.deleteOne();
     res.json({
       _id: deletedUser.id,
       name: deletedUser.name,
       email: deletedUser.email,
-      token: generateToken(deletedUser._id),
-      role: deletedUser.role,
       message: "User deleted",
     });
   } else {
     res.status(400);
-    throw new Error("delete failed");
+    throw new Error("Delete failed");
   }
 });
+
 
 const updateAdmin = asyncHandler(async (req, res) => {
   const id = req.params.id;
@@ -466,6 +489,26 @@ const handleFacebookCallback = async (code) => {
     );
   }
 }
+const adminProtect = asyncHandler(async (req, res, next) => {
+  if (req.user.role === "ADMIN") {
+    // Log the audit event for admin access
+    await logAudit(
+      {
+        headers: req.headers,
+        connection: req.connection,
+        user: { _id: req.user._id }, // Admin user ID
+      },
+      "ADMIN_ACCESS",
+      `Admin ${req.user.email} accessed admin route.`
+    );
+    
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized, not an ADMIN");
+  }
+});
+
 
 module.exports = {
   registerUser,
@@ -480,4 +523,5 @@ module.exports = {
   googleCallback,
   facebook,
   facebookCallback,
+  adminProtect,
 };
