@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
+const {jwtDecode} = require("jwt-decode");
 
 const viewUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
@@ -71,6 +73,53 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
+    throw new Error("Invalid user data");
+  }
+});
+
+const registerUserUsingSocials = asyncHandler(async (data) => {
+  const { name, email, address, phone, password, image, role } = data;
+
+  if (!name || !email || !password) {
+    throw new Error("Please add all fields");
+  }
+
+  // Check if user exists
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return userExists;
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  let user;
+  // Create user
+  if (role) {
+    user = await User.create({
+      name,
+      email,
+      address,
+      phone,
+      password: hashedPassword,
+      image: image,
+      role: role,
+    });
+  } else {
+    user = await User.create({
+      name,
+      email,
+      address,
+      phone,
+      password: hashedPassword,
+      image: image,
+    });
+  }
+  if (user) {
+      return user
+  } else {
     throw new Error("Invalid user data");
   }
 });
@@ -308,6 +357,116 @@ const forgotUser = asyncHandler(async (req, res) => {
   }
 });
 
+const google = asyncHandler(async (req, res) => {
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.BACKEND_URL}/api/auth/google/callback&response_type=code&scope=openid%20email%20profile`;
+  return await res.redirect(googleAuthUrl);
+});
+
+const googleCallback = asyncHandler(async (req, res) => {
+  const tokenData = await handleGoogleCallback(
+    req.query.code,
+  );
+  const queryParams = new URLSearchParams(tokenData).toString();
+  return res.redirect(
+    `${process.env.FRONTEND_URL + '/login-success'}?${queryParams}`,
+  );
+});
+
+const facebook = asyncHandler(async (req, res) => {
+  const facebookAuthUrl = `https://www.facebook.com/v9.0/dialog/oauth?client_id=${process.env.FACEBOOK_CLIENT_ID}&redirect_uri=${process.env.BACKEND_URL}/api/auth/facebook/callback&state={state-param}`;
+  return res.redirect(facebookAuthUrl);
+});
+
+const facebookCallback = asyncHandler(async (req, res) => {
+  const tokenData = await handleFacebookCallback(
+    req.query.code,
+  );
+  const queryParams = new URLSearchParams(tokenData).toString();
+  return res.redirect(
+    `${process.env.FRONTEND_URL + '/login-success'}?${queryParams}`,
+  );
+});
+
+const handleGoogleCallback = async (code) => {
+  const url = `https://oauth2.googleapis.com/token`;
+
+  const body = new URLSearchParams({
+    code,
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+    redirect_uri: `${process.env.BACKEND_URL}/api/auth/google/callback`,
+    grant_type: 'authorization_code',
+  });
+
+  try {
+
+    const response = await axios.post(url, body.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+
+    const decoded = jwtDecode(response.data.id_token);
+
+    const user = await registerUserUsingSocials({
+      name: decoded.name,
+      email: decoded.email,
+      password: 'password',
+    })
+ 
+    const token = jwt.sign(
+      {...user},
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1h',
+      },
+    );
+    return {
+      user: token,
+    };
+
+  } catch (error) {
+    console.log(error);
+    throw new Error('Unable to authenticate user');
+  }
+}
+
+const handleFacebookCallback = async (code) => {
+  const tokenUrl = `https://graph.facebook.com/v9.0/oauth/access_token`;
+
+  const params = {
+    client_id: process.env.FACEBOOK_CLIENT_ID,
+    client_secret: process.env.FACEBOOK_CLIENT_SECRET,
+    redirect_uri: `${process.env.BACKEND_URL}/api/auth/facebook/callback`,
+    code,
+  };
+
+  try {
+
+    const tokenResponse = await firstValueFrom(
+      this.httpService.get(tokenUrl, { params }),
+    );
+    const accessToken = tokenResponse.data.access_token;
+
+    const userResponse = await firstValueFrom(
+      this.httpService.get('https://graph.facebook.com/me', {
+        params: { access_token: accessToken, fields: 'id,name,email' },
+      }),
+    );
+
+    const id = userResponse.id;
+
+    return {
+      userid: decodedToken.sub,
+      role: userDetails ? userDetails.Role : 'not_registered',
+      id_token: keycloakToken.access_token,
+    };
+  } catch (error) {
+    throw new HttpException(
+      error.response?.data || 'An error occurred during Facebook Sign-In',
+      error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -317,4 +476,8 @@ module.exports = {
   deleteAdmin,
   updateAdmin,
   forgotUser,
+  google,
+  googleCallback,
+  facebook,
+  facebookCallback,
 };

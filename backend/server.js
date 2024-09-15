@@ -19,7 +19,7 @@ const rateLimit = require('express-rate-limit');
 
 
 const connectDB = require("./config/db");
-const port = process.env.port || 8080;
+const port = process.env.PORT || 8080;
 
 connectDB();
 
@@ -40,8 +40,11 @@ app.get("/", (res, req) => {
   req.send("welcome to happy tails");
 });
 
-app.use("/qr/", require("./routes/qrRoutes.js"));
 
+
+
+app.use("/qr/", require("./routes/qrRoutes.js"));
+app.use("/api/auth", require("./routes/authRoutes.js"));
 app.use("/api/users", require("./routes/userRoutes.js"));
 app.use("/api/booking/", require("./routes/bookingRoutes.js"));
 app.use("/api/sendEmail/", require("./routes/sendEmailRoutes.js"));

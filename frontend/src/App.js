@@ -106,8 +106,11 @@ import Employee from "./components/admin/Employee";
 import Feedback from "./components/admin/Feedback";
 import ForgotPassWord from "./components/ForgotPassWord";
 import Scanner from "./components/User/Scanner";
+import { useAutoLogin } from "./util/hooks";
 
 function App() {
+
+  useAutoLogin();
   return (
     <>
       <Router >
