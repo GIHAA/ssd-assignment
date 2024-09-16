@@ -3,6 +3,7 @@ const cors = require("cors");
 const colors = require("colors");
 const dotenv = require("dotenv").config();
 const { errorHandler } = require("./middleware/errorMiddleware");
+const helmet = require("helmet");
 
 const eventregister = require("./routes/registerEventRoutes");
 const eventRoutes = require("./routes/eventRoutes");
@@ -35,6 +36,10 @@ app.use(limiter);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+
+// Usage of Helmet to help secure the app
+app.use(helmet());
 
 app.get("/", (res, req) => {
   req.send("welcome to happy tails");
