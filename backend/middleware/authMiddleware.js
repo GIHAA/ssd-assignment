@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const logAudit = require("../middleware/logAudit");
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
@@ -19,22 +20,29 @@ const protect = asyncHandler(async (req, res, next) => {
       // Get user from the token
       req.user = await User.findOne({ _id: decoded.id }).select("-password");
 
-      if (req.user == null) throw new Error();
+      if (!req.user) throw new Error();
+
+      // Log successful authorization
+      await logAudit(req, "ACCESS_GRANTED", `User ID: ${req.user._id} User Roole: ${req.user.role}}accessed the resource.`);
 
       next();
     } catch (error) {
       console.log(error);
+
+      // Log failed authorization attempt
+      await logAudit(req, "ACCESS_DENIED", "Invalid token or unauthorized access attempt.");
+
       res.status(401);
       throw new Error("Not authorized");
     }
-  }
+  } else {
+    // Log missing token attempt
+    await logAudit(req, "ACCESS_DENIED", "No token provided.");
 
-  if (!token) {
     res.status(401);
     throw new Error("Not authorized, no token");
   }
 });
-
 const userProtect = asyncHandler(async (req, res, next) => {
   if (req.user.role == "USER") {
     next();
