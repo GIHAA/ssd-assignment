@@ -91,15 +91,28 @@ export default function AllEvent() {
     });
   };
 
+  const validateId = (id) => {
+    const idRegex = /^[0-9a-fA-F]{24}$/; // Example for MongoDB ObjectId format
+    return idRegex.test(id);
+  };
+
   const handleEdit = async (eventId, eid) => {
+    if (!validateId(eventId) || !validateId(eid)) {
+      toast.error("Invalid event ID or eid.");
+      return;
+    }
+  
     const res = await axios.get(
       `${process.env.REACT_APP_BACKEND_API}api/eventregister/getbooking`
     );
     const allBookings = res.data.allbooking;
-    console.log(allBookings);
+
+    // Sanitize eid before using it in comparisons
+    const sanitizedEid = DOMPurify.sanitize(eid);
     const filteredBookings = allBookings.filter(
-      (booking) => booking.eid === eid
+      (booking) => booking.eid === sanitizedEid
     );
+
     const totalNoOfTickets = filteredBookings.reduce(
       (acc, booking) => acc + booking.noOfTicket,
       0
@@ -110,7 +123,10 @@ export default function AllEvent() {
     );
     const allevents = response.data.allevents;
 
-    const filteredEvent = allevents.filter((event) => event.eid === eid);
+    // Sanitize eventId as well
+    const sanitizedEventId = DOMPurify.sanitize(eventId);
+    const filteredEvent = allevents.filter((event) => event.eid === sanitizedEid);
+
 
     if (
       filteredEvent[0].size !== "unlimited" &&
@@ -126,13 +142,13 @@ export default function AllEvent() {
           `Only ${remaining} tickets are available. If you wish you can book it`
         );
         setTimeout(() => {
-          window.location.href = `registerevent/${eventId}`;
+          window.location.href = `/registerevent/${sanitizedEventId}`;
         }, 5000);
         return; // Add a return statement to exit the function if the error message is displayed
       }
     }
 
-    window.location.href = `registerevent/${eventId}`;
+    window.location.href = `/registerevent/${sanitizedEventId}`;
   };
 
   return (
