@@ -1,50 +1,35 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const logAudit = require("../middleware/logAudit");
+const logAudit = require("./logAudit");
 
+// General protect middleware for all authenticated routes
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(" ")[1];
-
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Get user from the token
-      req.user = await User.findOne({ _id: decoded.id }).select("-password");
-
+      req.user = await User.findById(decoded.id).select("-password");
       if (!req.user) throw new Error();
-
-      // Log successful authorization
-      await logAudit(req, "ACCESS_GRANTED", `User ID: ${req.user._id} User Roole: ${req.user.role}}accessed the resource.`);
-
+      await logAudit(req, "ACCESS_GRANTED", `User ID: ${req.user._id} accessed the resource.`);
       next();
     } catch (error) {
-      console.log(error);
-
-      // Log failed authorization attempt
       await logAudit(req, "ACCESS_DENIED", "Invalid token or unauthorized access attempt.");
-
       res.status(401);
       throw new Error("Not authorized");
     }
   } else {
-    // Log missing token attempt
     await logAudit(req, "ACCESS_DENIED", "No token provided.");
-
     res.status(401);
     throw new Error("Not authorized, no token");
   }
 });
+
+// User role protection
 const userProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "USER") {
+  if (req.user.role === "USER") {
     next();
   } else {
     res.status(401);
@@ -52,8 +37,9 @@ const userProtect = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Admin role protection
 const adminProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "ADMIN") {
+  if (req.user.role === "ADMIN") {
     next();
   } else {
     res.status(401);
@@ -61,17 +47,9 @@ const adminProtect = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Event manager role protection
 const eventProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "EVENT_MANAGER") {
-    next();
-  } else {
-    res.status(401);
-    throw new Error("Not authorized, not a EVENT_MANAGER");
-  }
-});
-
-const iventoryProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "INVENTORY_MANAGER") {
+  if (req.user.role === "EVENT_MANAGER") {
     next();
   } else {
     res.status(401);
@@ -79,17 +57,29 @@ const iventoryProtect = asyncHandler(async (req, res, next) => {
   }
 });
 
-const vehicleProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "VEHICLE_MANAGER") {
+// Inventory manager role protection
+const inventoryProtect = asyncHandler(async (req, res, next) => {
+  if (req.user.role === "INVENTORY_MANAGER") {
     next();
   } else {
     res.status(401);
-    throw new Error("Not authorized, not an VEHICLE_MANAGER");
+    throw new Error("Not authorized, not an INVENTORY_MANAGER");
   }
 });
 
+// Vehicle manager role protection
+const vehicleProtect = asyncHandler(async (req, res, next) => {
+  if (req.user.role === "VEHICLE_MANAGER") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized, not a VEHICLE_MANAGER");
+  }
+});
+
+// Animal manager role protection
 const animalProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "ANIMAL_MANAGER") {
+  if (req.user.role === "ANIMAL_MANAGER") {
     next();
   } else {
     res.status(401);
@@ -97,21 +87,23 @@ const animalProtect = asyncHandler(async (req, res, next) => {
   }
 });
 
-const finacialProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "FINANCIAL_MANAGER") {
+// Financial manager role protection
+const financialProtect = asyncHandler(async (req, res, next) => {
+  if (req.user.role === "FINANCIAL_MANAGER") {
     next();
   } else {
     res.status(401);
-    throw new Error("Not authorized, not an FINANCIAL_MANAGER");
+    throw new Error("Not authorized, not a FINANCIAL_MANAGER");
   }
 });
 
+// Supplier manager role protection
 const supplierProtect = asyncHandler(async (req, res, next) => {
-  if (req.user.role == "SUPPLIER_MANAGER") {
+  if (req.user.role === "SUPPLIER_MANAGER") {
     next();
   } else {
     res.status(401);
-    throw new Error("Not authorized, not an SUPPLIER_MANAGER");
+    throw new Error("Not authorized, not a SUPPLIER_MANAGER");
   }
 });
 
@@ -120,9 +112,9 @@ module.exports = {
   userProtect,
   adminProtect,
   eventProtect,
-  iventoryProtect,
+  inventoryProtect,
   vehicleProtect,
   animalProtect,
-  finacialProtect,
+  financialProtect,
   supplierProtect,
 };

@@ -6,6 +6,7 @@ const logAudit = async (req, action, description = '', status = 'INFO') => {
   let userId = null;
   let userName = 'Anonymous';
 
+
   if (req.user && req.user._id) {
     const user = await User.findById(req.user._id).select('name');
     if (user) {
@@ -14,14 +15,21 @@ const logAudit = async (req, action, description = '', status = 'INFO') => {
     }
   }
 
+  let csrfTokenDetails = '';
+  if (req.csrfToken) {
+    csrfTokenDetails = `CSRF Token: ${req.csrfToken()}`;
+  } else {
+    csrfTokenDetails = 'No CSRF Token found';
+  }
+
   await Audit.create({
     action,
     user: userId,
     userName,
-    description,
+    description: `${description} ${csrfTokenDetails}`,
     ipAddress,
-    status, // Can be INFO, WARNING, or ERROR
-    timestamp: new Date()
+    status,
+    timestamp: new Date(),
   });
 };
 

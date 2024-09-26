@@ -1,7 +1,5 @@
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const axios = require("axios");
+const { csrfProtection, getCsrfToken } = require("../middleware/csrfProtection");
 const router = express.Router();
 const {
   registerUser,
@@ -19,15 +17,19 @@ const {
   adminProtect,
 } = require("../middleware/authMiddleware");
 
-router.get("/", viewUsers);
-router.post("/", registerUser);
-router.post("/login", loginUser);
-router.post("/update", protect, userProtect, updateUser);
-router.post("/forgot", forgotUser);
+// Route to get the CSRF token - accessible without CSRF protection
+router.get("/csrf-token", getCsrfToken);
+
+// Apply CSRF protection directly to routes that require it
+router.get("/", csrfProtection, viewUsers);
+router.post("/", csrfProtection, registerUser);
+router.post("/login", csrfProtection, loginUser); // Make sure loginUser handles CSRF properly
+router.post("/update", csrfProtection, protect, userProtect, updateUser);
+router.post("/forgot", csrfProtection, forgotUser);
 router.delete("/", protect, userProtect, deleteUser);
 
-//admin
-router.put("/:id", protect, updateAdmin);
-router.delete("/:id", protect, deleteAdmin);
+// Admin-specific routes with protection
+router.put("/:id", protect, adminProtect, updateAdmin);
+router.delete("/:id", protect, adminProtect, deleteAdmin);
 
 module.exports = router;
